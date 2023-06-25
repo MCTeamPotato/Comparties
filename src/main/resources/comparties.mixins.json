@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.teampotato.comparties.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "comparties.refmap.json",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "MixinDamageSources",
+    "MixinEventCommon"
+  ]
+}

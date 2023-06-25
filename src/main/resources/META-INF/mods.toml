@@ -1,0 +1,12 @@
+modLoader="javafml"
+loaderVersion="[36,)"
+license="LGPL-v3"
+
+[[mods]]
+modId="comparties"
+version="${file.jarVersion}"
+displayName="Comparties"
+authors="Team Potato"
+description='''
+
+'''
