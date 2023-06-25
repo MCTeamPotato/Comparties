@@ -1,7 +1,6 @@
 package com.teampotato.comparties.mixin;
 
 import deathtags.api.PartyHelper;
-import deathtags.api.relation.EnumRelation;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.spells.SchoolType;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,6 +11,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import static com.teampotato.comparties.Comparties.PARTY;
+
 @Mixin(value = DamageSources.class, remap = false)
 public abstract class MixinDamageSources {
     @Inject(method = "applyDamage", at = @At("HEAD"), cancellable = true)
@@ -19,11 +20,11 @@ public abstract class MixinDamageSources {
         if (target instanceof ServerPlayer targetPlayer) {
             Entity sourceEntity = damageSource.getEntity();
             Entity directSourceEntity = damageSource.getDirectEntity();
-            if (sourceEntity instanceof ServerPlayer sourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, sourcePlayer) == EnumRelation.PARTY) {
+            if (sourceEntity instanceof ServerPlayer sourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, sourcePlayer) == PARTY) {
                 cir.setReturnValue(false);
                 cir.cancel();
             }
-            if (directSourceEntity instanceof ServerPlayer directSourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, directSourcePlayer) == EnumRelation.PARTY) {
+            if (directSourceEntity instanceof ServerPlayer directSourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, directSourcePlayer) == PARTY) {
                 cir.setReturnValue(false);
                 cir.cancel();
             }

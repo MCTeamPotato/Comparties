@@ -9,6 +9,8 @@
   },
   "mixins": [
     "MixinDamageSources",
-    "MixinEventCommon"
+    "MixinEventCommon",
+    "MixinLivingEntity",
+    "MixinPlayer"
   ]
 }
