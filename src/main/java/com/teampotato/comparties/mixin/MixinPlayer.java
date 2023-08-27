@@ -26,7 +26,7 @@ public abstract class MixinPlayer extends LivingEntity {
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void onHurt(DamageSource pSource, float pAmount, CallbackInfoReturnable<Boolean> cir) {
-        Player player = getThis();
+        Player player = (Player) (Object)this;
         if (player instanceof ServerPlayer targetPlayer) {
             Entity sourceEntity = pSource.getEntity();
             Entity directSourceEntity = pSource.getDirectEntity();
@@ -63,9 +63,5 @@ public abstract class MixinPlayer extends LivingEntity {
                 cir.cancel();
             }
         }
-    }
-
-    private Player getThis() {
-        return (Player) (Object)this;
     }
 }

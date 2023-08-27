@@ -19,7 +19,7 @@ import static com.teampotato.comparties.Comparties.PARTY;
 public abstract class MixinLivingEntity {
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void onHurt(DamageSource pSource, float pAmount, CallbackInfoReturnable<Boolean> cir) {
-        LivingEntity pet = getThis();
+        LivingEntity pet = (LivingEntity) (Object) this;
         if (pet instanceof TamableAnimal targetPet && targetPet.getOwner() instanceof ServerPlayer petOwner) {
             Entity sourceEntity = pSource.getEntity();
             Entity directSourceEntity = pSource.getDirectEntity();
@@ -56,9 +56,5 @@ public abstract class MixinLivingEntity {
                 cir.cancel();
             }
         }
-    }
-
-    private LivingEntity getThis() {
-        return (LivingEntity) (Object) this;
     }
 }
