@@ -11,6 +11,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -26,46 +27,22 @@ public abstract class MixinPlayer extends LivingEntity {
 
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void onHurt(DamageSource pSource, float pAmount, CallbackInfoReturnable<Boolean> cir) {
-        Player player = getThis();
+        Player player = comparties$getThis();
         if (player instanceof ServerPlayer targetPlayer) {
-            Entity sourceEntity = pSource.getEntity();
             Entity directSourceEntity = pSource.getDirectEntity();
-            if (sourceEntity instanceof ServerPlayer sourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, sourcePlayer) == PARTY) {
-                cir.setReturnValue(false);
-                cir.cancel();
-                return;
-            } else if (sourceEntity instanceof ThrownPotion sourcePotion &&
-                    sourcePotion.getOwner() instanceof ServerPlayer ownerPlayer &&
-                    PartyHelper.Server.GetRelation(targetPlayer, ownerPlayer) == PARTY) {
-                cir.setReturnValue(false);
-                cir.cancel();
-                return;
-            } else if (sourceEntity instanceof AreaEffectCloud sourceCloud &&
-                    sourceCloud.getOwner() instanceof ServerPlayer ownerPlayer &&
-                    PartyHelper.Server.GetRelation(targetPlayer, ownerPlayer) == PARTY) {
-                cir.setReturnValue(false);
-                cir.cancel();
-                return;
-            }
-
-            if (directSourceEntity instanceof ServerPlayer sourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, sourcePlayer) == PARTY) {
-                cir.setReturnValue(false);
-                cir.cancel();
-            } else if (directSourceEntity instanceof ThrownPotion sourcePotion &&
-                    sourcePotion.getOwner() instanceof ServerPlayer ownerPlayer &&
-                    PartyHelper.Server.GetRelation(targetPlayer, ownerPlayer) == PARTY) {
-                cir.setReturnValue(false);
-                cir.cancel();
-            } else if (directSourceEntity instanceof AreaEffectCloud sourceCloud &&
-                    sourceCloud.getOwner() instanceof ServerPlayer ownerPlayer &&
-                    PartyHelper.Server.GetRelation(targetPlayer, ownerPlayer) == PARTY) {
+            if (
+                    (directSourceEntity instanceof ServerPlayer sourcePlayer && PartyHelper.Server.GetRelation(targetPlayer, sourcePlayer) == PARTY) ||
+                    (directSourceEntity instanceof ThrownPotion sourcePotion && sourcePotion.getOwner() instanceof ServerPlayer ownerPlayer && PartyHelper.Server.GetRelation(targetPlayer, ownerPlayer) == PARTY) ||
+                    (directSourceEntity instanceof AreaEffectCloud sourceCloud && sourceCloud.getOwner() instanceof ServerPlayer cloudOwner && PartyHelper.Server.GetRelation(targetPlayer, cloudOwner) == PARTY)
+            ) {
                 cir.setReturnValue(false);
                 cir.cancel();
             }
         }
     }
 
-    private Player getThis() {
+    @Unique
+    private Player comparties$getThis() {
         return (Player) (Object)this;
     }
 }
